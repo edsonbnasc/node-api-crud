@@ -26,6 +26,7 @@ const carros = [
 
 ]
 
+//função para realizar a busca no banco de dados
 function buscaCarro(id){
     return carros.findIndex(carros =>{
         return carros.id === Number(id);
@@ -37,15 +38,37 @@ app.get("/carros", (req,res) =>{
     res.status(200).json(carros);
 });
 
-app.get("/carros/:id", (req,res) =>{
-    const id = buscaCarro(req.params.id);
-    res.status(200).json(carros[id]);
-});
-
+//cadastrar um elemento ao banco de dados
 app.post("/carros", (req,res) =>{
     carros.push(req.body);
     res.status(201).send("Cadastrado  com sucesso!");
 });
 
+//buscar por um id no banco de dados
+app.get("/carros/:id", (req,res) =>{
+    const id = buscaCarro(req.params.id);
+    res.status(200).json(carros[id]);
+});
+
+//editar um id no banco de dados
+app.put("/carros/:id", (req,res) => {
+    const id = buscaCarro(req.params.id);
+    carros[id].marca = req.body.marca;
+    carros[id].modelo = req.body.modelo;
+    res.status(200).json(carros[id]);
+});
+
+//deletar o id no banco de dados
+app.delete("/carros/:id", (req,res) => {
+    const id = buscaCarro(req.params.id);
+    if (carros[id]) {
+        carros.splice(id, 1);
+        res.status(200).send("Deletado com sucesso!");
+    } else {
+        res.status(404).send("Carro não encontrado!");
+        
+    }
+    console.log(id);
+})
 
 export default app;
